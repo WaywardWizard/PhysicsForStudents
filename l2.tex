@@ -4,6 +4,7 @@
 \usepackage{booktabs}
 \usepackage{pgfplots}
 \usepackage{marginnote}
+\usepackage{tabularx}
 \usepackage[marginparwidth=2.3cm]{geometry}
 \usepackage[ampersand]{easylist}
 
@@ -74,7 +75,7 @@ equations relate these quantities. \\
 Importantly, they are used only when acceleration is \textbf{constant} or \textbf{averaged}. \\
 
 \noindent
-\begin{tabular}{|c l c|}
+\begin{tabular*}{\columnwidth}{|c l @{\extracolsep{\fill}} c|}
 	\toprule
 \textbf{Symbol} & \textbf{Meaning} & \textbf{[Unit]} \\ \midrule
 	\(V_i\) & Initial velocity. The velocity at the beginning of a time period. &\(ms^{-1}\) \\
@@ -82,13 +83,14 @@ Importantly, they are used only when acceleration is \textbf{constant} or \textb
 	a & Constant (or average) acceleration for the time period. & \(ms^{-2}\) \\
 	t & Time period over which velocity canged. & \(s\) \\
 	d & Distance that the object travel(s,led) (in the time period) & m \\ \bottomrule
-\end{tabular}
-\\
+\end{tabular*}
 
-$V_f=V_i+at$
-$d=\frac{V_i+V_f}{2}t$
-$V_f^2=V_i^2+2ad$
-$d=V_it+\frac{at^2}{2}$
+\noindent
+\begin{tabular*}{\columnwidth}{|c@{\extracolsep{\fill}}ccc|}
+	\hline
+	\Large $V_f=V_i+at$ & $d=\frac{V_i+V_f}{2}t$ & $V_f^2=V_i^2+2ad$ & $d=V_it+\frac{at^2}{2}$ \\
+	\hline
+\end{tabular*}
 
 \part{Forces}
 
