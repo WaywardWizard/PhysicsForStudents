@@ -7,6 +7,7 @@
 \usepackage{pgfplots}
 \usepackage{marginnote}
 \usepackage{amsmath}
+\usepackage{xspace}
 
 \usepackage{array}
 \usepackage{tabularx}
@@ -44,7 +45,12 @@
 
 \makeglossaries
 
+\tikzset{
+	vec/.style={very thick,-{Stealth}},
+	cpt/.style={postaction=decorate,decoration={markings, mark=at position 0.5 with {\arrow{>>}}}}
+}
 
+\newcommand{\mc}[1]{\pgfmathparse{#1}\pgfmathresult}
 \begin{document}
 \maketitle
 
@@ -63,18 +69,20 @@ understanding. See the glossary.
 
 \section{Vectors \& Scalars}
 
-\newcommand{\vc}[2]{
-	\vcenter{\hbox{\begin{tikzpicture}[> = Straight Barb, vec/.style = {very thick, -{Stealth}}]
-		\draw[vec] (0,0) -- (#1:#2) ;
-\end{tikzpicture}}}
-}
-
+\def\mylsp{1.8}
+\newlength\lsp\setlength{\lsp}{\mylsp ex} % label spacing for vectors given as x,y shift
+\pgfmathparse{sqrt(\mylsp^2/2)}
+\newlength\lspx\setlength{\lspx}{\pgfmathresult ex} % label spacing for vectors given as x,y shift
 \newcommand{\vcc}[2]{
-	\vcenter{\hbox{\begin{tikzpicture}[vec/.style = {very thick, -{Stealth}}]
+	\vcenter{\hbox{\tikz{
 				\draw[vec] (0,0) -- (#1:#2);
-				\draw[vec,very thin] (0,0) -- (#1:#2 |- 0,0);
-				\draw[vec,very thin] (#1:#2|-0,0) -- (#1:#2);
-	\end{tikzpicture}}}
+				\draw[cpt] (0,0) -- (#1:#2 |- 0,0);
+				\draw[cpt] (#1:#2|-0,0) -- (#1:#2);
+			\draw ($(0,0)!.5!(#1:#2)+({mod(#1+360+90,360)<180?-\lspx:\lspx},{mod(#1+360,360)<180?\lspx:-\lspx})$) node{$V$};
+			\draw ($(0,0)!.5!(#1:#2|-0,0) + (0,{mod(#1+360,360)>180?\lsp:-\lsp})$) node{$V_x$};
+			\draw ($(#1:#2)!.5!(#1:#2|-0,0)+ ({mod(#1+360+90,360)<180?\lsp:-\lsp},0)$) node {$V_y$};
+			}
+	}}
 }
 
 \newcommand{\vcl}[3]{
@@ -85,16 +93,19 @@ understanding. See the glossary.
 }
 
 
-\newcommand{\vadd}[4]{
+
+\newcommand{\vadd}[4]{\vaddl{#1}{#2}{A}{#3}{#4}{B}}
+\newcommand{\vaddl}[6]{ \vaddll{#1}{#2}{#3}{#4}{#5}{#6}{#3+#6} }
+\newcommand{\vaddll}[7]{
 	\vcenter{\hbox{\tikz[vec/.style ={very thick, -{Stealth}},line join=miter]{
 		\draw[vec,blue] (0,0) -- (#1:#2);
-		\draw[vec,blue] (#1:#2) -- ++(#3:#4);
-		\draw[red,postaction=decorate,decoration={markings, mark=at position 0.5 with {\arrow{>>}}}] (0,0) -- ($(#1:#2)+(#3:#4)$) node(R){};
+		\draw[vec,blue] (#1:#2) -- ++(#4:#5);
+		\draw[red,cpt] (0,0) -- ($(#1:#2)+(#4:#5)$) node(R){};
 		
 		% When theta of result (R) 0<\theta<180. below{A,B}, above{R}. Else reverse of this
-		\draw ($(0,0)!0.5!(#1:#2) + ({#1+(#2*sin(#1)+#4*sin(#3)>0?90:-90)}:-1.4ex)$) node{A};
-		\draw ($(#1:#2)!0.5!(R) + ({#3+(#2*sin(#1)+#4*sin(#3)>0?90:-90)}:-1.4ex)$) node{B};
-		\draw ($(0,0)!0.5!(R) + ({#3+(#2*sin(#1)+#4*sin(#3)>0?-90:90)}:-2ex)$) node[shape=circle]{A+B};
+		\draw ($(0,0)!0.5!(#1:#2) + ({#1+(#2*sin(#1)+#5*sin(#4)>0?90:-90)}:-\lsp)$) node{#3};
+		\draw ($(#1:#2)!0.5!(R) + ({#4+(#2*sin(#1)+#5*sin(#4)>0?90:-90)}:-\lsp)$) node{#6};
+		\draw ($(0,0)!0.5!(R) + ({#4+(#2*sin(#1)+#5*sin(#4)>0?-90:90)}:-\lsp)$) node{#7};
 	}}}
 }
 
@@ -113,7 +124,7 @@ understanding. See the glossary.
 	\end{tikzpicture}
 }
 
- 
+
 \newglossaryentry{scalar}{name=scalar,description={a number or quantity, only}}
 \newglossaryentry{vector}{name=vector,description={a number/size \emph{and} a direction}}
 
@@ -158,14 +169,19 @@ Note that $A-B \neq B-A$. For any two vectors to be the same they must have the 
 \end{align*} 
 These are different resultants because they have different directions (they are opposite). 
 
-$\vcc{45}{1}$
 
 \subsection{Vector Components}
 \newglossaryentry{component}{name=component,description={a part of an object or thing}}
-A vector $V$ can be split into a horizontal ($V_x$) and vertical ($V_y$) \gls{component}. 
-pic
-These components add to the original vector.
-pic
+
+A vector $V$ can be split into a horizontal ($V_x$) and vertical ($V_y$) \gls{component}. $\vcc{60}{2}$
+
+$V_x$ and $V_y$ are also vectors. They add to the original vector. 
+\begin{align*}
+	( \vcl{0}{1}{$V_x$} + \vcl{90}{1.7321}{$V_y$} ) = \vaddll{0}{1}{$V_x$}{90}{1.7321}{$V_y$}{$V_x+V_y$} = \vcc{60}{2}
+\end{align*}
+%$\v\vaddll{0}{1}{$V_x$}{90}{1.7321}{$V_y$}{$V_x+V_y=V$}$
+
+We say $V_x$ and $V_y$ are components of $V$.
 
 \part{Motion}
 
@@ -243,6 +259,7 @@ or all vertical.
 	t & Time period over which velocity canged. & \(s\) \\
 	d & Distance that the object travel(s,led) (in the time period) & m \\ \bottomrule
 \end{tabular*}
+
 
 \part{Forces}
 
