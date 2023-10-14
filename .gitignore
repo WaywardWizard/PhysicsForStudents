@@ -5,3 +5,8 @@
 *fls
 *latexmk
 *aux
+*.gl*
+*.dvi
+*.ist
+*.out
+*.csv
